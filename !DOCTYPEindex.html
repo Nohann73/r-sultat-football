@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats Sportifs - Football</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .content {
+            margin: 20px;
+        }
+
+        .sport-section h2 {
+            color: #333;
+            border-bottom: 2px solid #444;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Résultats Sportifs - Football</h1>
+    </header>
+
+    <div class="content">
+        <div id="football" class="sport-section">
+            <h2>Football - Derniers Résultats</h2>
+            <table id="football-table">
+                <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>Score</th>
+                        <th>Compétition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les résultats seront insérés ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p style="text-align: center; background-color: #333; color: white; padding: 10px;">© 2025 Résultats Sportifs</p>
+    </footer>
+
+    <script>
+        // Remplacez par votre clé API de Football-Data.org
+        const apiKey = 'ab1dd7edb177443280399b09594d81b3';  // Obtenez une clé API gratuite sur https://www.football-data.org/
+        const url = 'https://api.football-data.org/v4/matches';
+
+        // Fonction pour récupérer les résultats de football depuis l'API
+        async function getFootballResults() {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'X-Auth-Token': apiKey
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données');
+                }
+
+                const data = await response.json();
+                const matches = data.matches;
+                const tableBody = document.querySelector('#football-table tbody');
+
+                // Vider le tableau avant d'ajouter de nouvelles lignes
+                tableBody.innerHTML = '';
+
+                // Ajouter les résultats au tableau
+                matches.forEach(match => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${match.homeTeam.name} vs ${match.awayTeam.name}</td>
+                        <td>${match.score.fullTime.homeTeam} - ${match.score.fullTime.awayTeam}</td>
+                        <td>${match.competition.name}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Impossible de récupérer les résultats. Veuillez réessayer plus tard.');
+            }
+        }
+
+        // Appeler la fonction pour récupérer les résultats lorsque la page se charge
+        window.onload = getFootballResults;
+    </script>
